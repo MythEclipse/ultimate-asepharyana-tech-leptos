@@ -31,7 +31,7 @@ const PROJECTS: &[Project] = &[
         tag: "Backend",
         description: "High-performance, memory-safe backend infrastructure developed with Rust and Axum, featuring interactive API documentation.",
         images: ProjectImages { light: "/public/project-rust.png", dark: "/public/project-rust.png" },
-        link_url: "https://ws.asepharyana.tech/docs",
+        link_url: "https://rust.asepharyana.tech/docs",
     },
     Project {
         title: "Anime",
