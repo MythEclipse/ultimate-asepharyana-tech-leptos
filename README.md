@@ -1,79 +1,50 @@
-<picture>
-    <source srcset="https://raw.githubusercontent.com/leptos-rs/leptos/main/docs/logos/Leptos_logo_Solid_White.svg" media="(prefers-color-scheme: dark)">
-    <img src="https://raw.githubusercontent.com/leptos-rs/leptos/main/docs/logos/Leptos_logo_RGB.svg" alt="Leptos Logo">
-</picture>
+# Leptos Web App
 
-# Leptos Client-Side Rendered (CSR) App Starter Template
+Frontend WASM berbasis Leptos (CSR) dengan build pipeline Trunk + Tailwind.
 
-This is a template for use with the [Leptos][Leptos] web framework using the [Trunk][Trunk] tool to compile and serve your app in development.a
+## Prerequisites
 
-## Creating your repo from the template
+- Rust toolchain `nightly`
+- target `wasm32-unknown-unknown`
+- `trunk`
+- Bun (untuk dependency CSS/Tailwind)
 
-This template requires you to have `cargo-generate` and `trunk` installed. [`leptosfmt`](https://github.com/bram209/leptosfmt) is optional but highly recommended. You can install them with
-
-```sh
-cargo install cargo-generate trunk leptosfmt
-```
-
-
-To set up your project with this template, run
-
-```sh
-cargo generate --git https://github.com/leptos-rs/start-trunk
-```
-
-to generate your new project, then
-
-```sh
-cd leptosa
-```
-
-to go to your newly created project.
-
-By default, this template uses Rust `nightly` and requires that you've installed the `wasm` compilation target for your toolchain.
-
-
-Sass and Tailwind are also supported by the Trunk build tool, but are optional additions: [see here for more info on how to set those up with Trunk][Trunk-instructions].
-
-
-If you don't have Rust nightly, you can install it with
-```sh
+```bash
 rustup toolchain install nightly --allow-downgrade
-```
-
-You can add the `wasm` compilation target to rust using
-```sh
 rustup target add wasm32-unknown-unknown
+cargo install trunk
 ```
 
+## Install
 
-## Developing your Leptos CSR project
-
-To develop your Leptos CSR project, running
-
-```sh
-trunk serve --port 3000 --open
+```bash
+bun install
 ```
 
-will open your app in your default browser at `http://localhost:3000`.
+## Development
 
+```bash
+trunk serve
+```
 
-## Deploying your Leptos CSR project
+Default local URL: `http://localhost:3000`
 
-To build a Leptos CSR app for release, use the command
+Catatan:
 
-```sh
+- Trunk menjalankan hook pre-build untuk compile Tailwind:
+    `./node_modules/.bin/tailwindcss -i style/main.css -o style/output.css`
+- Request `/api/*` diproxy ke `https://rust.asepharyana.tech/api/` sesuai `Trunk.toml`.
+
+## Build
+
+```bash
 trunk build --release
 ```
 
-This will output the files necessary to run your app into the `dist` folder; you can then use any static site host to serve these files.
+Output static ada di folder `dist`.
 
-For further information about hosting Leptos CSR apps, please refer to [the Leptos Book chapter on deployment available here][deploy-csr].
+## Manual CSS Build (optional)
 
-
-[Leptos]: https://github.com/leptos-rs/leptos
-
-[Trunk]: https://github.com/trunk-rs/trunk
-[Trunk-instructions]: https://trunkrs.dev/assets/
-
-[deploy-csr]: https://book.leptos.dev/deployment/csr.html
+```bash
+bun run build
+```
