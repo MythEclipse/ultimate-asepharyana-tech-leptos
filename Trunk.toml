@@ -65,7 +65,7 @@ open = false
 [[hooks]]
 stage = "pre_build"
 command = "sh"
-command_arguments = ["-c", "./node_modules/.bin/tailwindcss -i style/main.css -o style/output.css"]
+command_arguments = ["-c", "node ./node_modules/.bin/tailwindcss -i style/main.css -o style/output.css"]
 
 [[proxy]]
 rewrite = "/api/"
