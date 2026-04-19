@@ -142,7 +142,6 @@
 
         const stats = {
           app: { received: 0, total: 0 },
-          visuals: { received: 0, total: 0 },
           lastUpdate: performance.now(),
           lastBytes: 0,
           speed: '0 B/s',
@@ -176,9 +175,8 @@
         }
 
         function updateUI() {
-          const totalReceived = stats.app.received + stats.visuals.received;
-          const totalExpected =
-            (stats.app.total || 3000000) + (stats.visuals.total || 4500000);
+          const totalReceived = stats.app.received;
+          const totalExpected = (stats.app.total || 3000000);
 
           const now = performance.now();
           if (now - stats.lastUpdate > 400) {
@@ -246,31 +244,6 @@
           ? fetchWithProgress(wasmLink.href, 'app')
           : Promise.resolve();
 
-        const visualsUrl = 'https://visuals.asepharyana.tech/';
-        addLog('DETECTING VISUALS_IFRAME_PROTOCOL...');
-
-        const visualsPromise = (async () => {
-          try {
-            const htmlResp = await fetch(visualsUrl);
-            const htmlText = await htmlResp.text();
-            const parser = new DOMParser();
-            const doc = parser.parseFromString(htmlText, 'text/html');
-            const link =
-              doc.querySelector('link[rel="preload"][as="fetch"]') ||
-              doc.querySelector('link[rel="modulepreload"][href$=".wasm"]');
-
-            if (link) {
-              const wasmUrl = new URL(link.getAttribute('href'), visualsUrl)
-                .href;
-              addLog(
-                `RESOLVED VISUAL_BINARY: ${wasmUrl.split('/').pop().substring(0, 8)}...`,
-              );
-              await fetchWithProgress(wasmUrl, 'visuals');
-            }
-          } catch (e) {
-            addLog('WARN: VISUALS_SYNC_BYPASSED', '#fbbf24');
-          }
-        })();
 
         const hideOverlay = () => {
           addLog('ALL_PROTOCOLS_READY // ENTERING MAINFRAME', '#4ade80');
@@ -292,7 +265,7 @@
         // This is the signal to hide the overlay — it covers both
         // WASM download AND the first route's data fetch.
         window.addEventListener('leptos-content-ready', () => {
-          Promise.all([mainWasmPromise, visualsPromise]).then(hideOverlay);
+          mainWasmPromise.then(hideOverlay);
         });
 
         // Fallback safety: if leptos-content-ready never fires (e.g. cached WASM
@@ -305,7 +278,7 @@
             setTimeout(() => {
               if (overlay.style.display !== 'none' && overlay.style.opacity !== '0') {
                 addLog('FALLBACK_HIDE // CONTENT_SIGNAL_TIMEOUT', '#fbbf24');
-                Promise.all([mainWasmPromise, visualsPromise]).then(hideOverlay);
+                mainWasmPromise.then(hideOverlay);
               }
             }, 3000);
           }

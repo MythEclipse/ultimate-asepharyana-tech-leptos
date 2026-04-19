@@ -11,70 +11,10 @@ use crate::pages::home::hero::Hero;
 use crate::pages::home::arsenal::Arsenal;
 use crate::pages::home::projects::Projects;
 
-static VISUALS_READY: AtomicBool = AtomicBool::new(false);
 
 #[component]
 pub fn HomePage() -> impl IntoView {
-    let (visuals_ready, set_visuals_ready) = create_signal(VISUALS_READY.load(Ordering::Relaxed));
 
-    // Listen for Bevy's Readiness Signal
-    create_effect(move |_| {
-        if visuals_ready.get_untracked() {
-            return;
-        }
-
-        #[cfg(feature = "csr")]
-        {
-            use web_sys::window;
-            if let Some(win) = window() {
-                let is_mobile = win
-                    .match_media("(max-width: 767px)")
-                    .ok()
-                    .flatten()
-                    .map(|m| m.matches())
-                    .unwrap_or(false);
-                if is_mobile {
-                    set_visuals_ready.set(true);
-                    VISUALS_READY.store(true, Ordering::Relaxed);
-                    return;
-                }
-            }
-        }
-
-        #[cfg(feature = "csr")]
-        {
-            use wasm_bindgen::prelude::*;
-            use wasm_bindgen::JsCast;
-            use web_sys::window;
-
-            let handle_message = Closure::wrap(Box::new(move |ev: web_sys::MessageEvent| {
-                if let Some(msg) = ev.data().as_string() {
-                    if msg == "PROTOCOL_READY" {
-                        set_visuals_ready.set(true);
-                        VISUALS_READY.store(true, Ordering::Relaxed);
-                    }
-                }
-            }) as Box<dyn FnMut(web_sys::MessageEvent)>);
-
-            window().unwrap()
-                .add_event_listener_with_callback("message", handle_message.as_ref().unchecked_ref())
-                .unwrap();
-
-            handle_message.forget();
-        }
-
-        set_timeout(
-            move || {
-                if !visuals_ready.get_untracked() {
-                    set_visuals_ready.set(true);
-                    VISUALS_READY.store(true, Ordering::Relaxed);
-                }
-            },
-            std::time::Duration::from_millis(8000),
-        );
-    });
-
-    let visuals_url = option_env!("VISUALS_URL").unwrap_or("https://visuals.asepharyana.tech/");
 
     view! {
         <Title text="Full-Stack Developer | Asep Haryana"/>
@@ -84,7 +24,7 @@ pub fn HomePage() -> impl IntoView {
         <Meta name="twitter:card" content="summary_large_image"/>
 
         <main class="relative z-10 w-full overflow-hidden">
-            <Hero visuals_url=visuals_url.to_string() />
+            <Hero />
             <Arsenal />
             <Projects />
 

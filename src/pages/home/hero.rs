@@ -3,17 +3,11 @@ use leptos_router::A;
 use crate::components::ui::GlitchText;
 
 #[component]
-pub fn Hero(visuals_url: String) -> impl IntoView {
+pub fn Hero() -> impl IntoView {
     view! {
         <section class="min-h-screen flex flex-col items-center justify-center px-6 md:px-12 py-32 relative group overflow-hidden scanlines">
-            // Bevy Visuals Integration — desktop only
-            <div class="absolute inset-0 -z-10 hidden md:block">
-                <iframe
-                    src=visuals_url
-                    class="w-full h-full border-0 opacity-60 mix-blend-screen pointer-events-none grayscale brightness-150 dark:brightness-100 dark:mix-blend-screen mix-blend-multiply"
-                    title="Neural Particle Simulation"
-                />
-            </div>
+            // Background Aesthetic
+            <div class="absolute inset-0 -z-10 bg-gradient-to-br from-background via-indigo-950/20 to-background opacity-40" />
 
             <div class="absolute inset-0 opacity-40 pointer-events-none">
                 <div class="absolute top-1/4 left-1/4 w-[50rem] h-[50rem] bg-primary/20 rounded-full blur-[160px] animate-pulse-slow" />

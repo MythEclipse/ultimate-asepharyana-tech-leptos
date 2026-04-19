@@ -44,8 +44,6 @@ pub fn CinematicIntro(on_complete: Rc<dyn Fn()>) -> impl IntoView {
         });
     }
 
-    // build-time parameter for visuals host (defaults to visuals.localhost)
-    let visuals_url = option_env!("VISUALS_URL").unwrap_or("https://visuals.asepharyana.tech/");
 
     create_effect({
         let on_complete = on_complete.clone();
@@ -118,15 +116,7 @@ pub fn CinematicIntro(on_complete: Rc<dyn Fn()>) -> impl IntoView {
                         </div>
                     </div>
                 }
-            >
-                // Bevy 3D Solar System (Intro Stage)
-                <div class="absolute inset-0 z-0 animate-fade-in transition-opacity duration-1000">
-                    <iframe
-                        src={visuals_url}
-                        class="w-full h-full border-0 brightness-110"
-                        title="3D Cinematic Visuals"
-                    />
-                </div>
+                <div class="absolute inset-0 z-0 bg-gradient-to-br from-indigo-950 to-black animate-fade-in transition-opacity duration-1000" />
             </Show>
 
             // Scanlines Overlay
